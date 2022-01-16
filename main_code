@@ -1,0 +1,435 @@
+#Code for entire game
+current_status = {'Location': "Plaza", 'Time': "Morning"}
+current_inventory = {'Outfit': "Traveler's Clothes", 'Money': 0, 'Other Items': "None"}
+items = []
+bazaar_items = ["Food", "Utensils"]
+won = False
+man = False
+guard = False
+thunder_helm = False
+
+
+#Plaza area
+start_desc = "You have finally made it to the plaza in front of the Gerudo Town, where the famed Thunder Helmet is located. There is a garden to the West with someone inside. To the East, there is a man, who looks like he is looking for something. To the north, there is a guard blocking the entrance to the Gerudo Town. To the South, is the vast desert from which you have travelled."
+plaza_desc = "You are back in the plaza. To the East, there is a man, who looks like he is looking for something. To the north, there is a guard blocking the entrance to the Gerudo Town. To the South, is the vast desert from which you have travelled."
+man_desc = "You have approached the man."
+entrance_desc = "There is a guard in front of the entrance."
+desert_desc = "You are too tired to go back into the desert."
+#East
+talk_man = "Man: I have lost my favorite scarf and I do not know where it could be! Could you help me find it? If you happen to find it I will give you a reward."
+talk_man_recieve = "Man: Thank you so much for finding my scarf! I do not know what I would've done if I had lost it. As promised, here is your reward."
+talk_man_scarf = "Man: Thanks again!"
+#North
+guard_no_armor = "Guard: Outsiders are not allowed in the Gerudo Town. Begone!"
+guard_with_armor = "Guard: Welcome back to the Gerudo Town."
+#Garden area
+garden_desc_scarf = "You have entered the garden, there is a lady looking at the greenery. On the floor there seems to be a scarf."
+garden_desc = "You have entered the garden, there is a lady looking at the greenery."
+talk_lady_no_money = "Lady: Are you trying to get into Gerudo Town? They won’t let you in if you don't have Gerudo Armor. If you can bring me 500 coins, I’ll sell you mine."
+talk_lady_money = "Lady: Pleasure doing business with you. Here is the Gerudo Armor."
+talk_lady = "Lady: Enjoy the armor."
+scarf_not_picked = "You have picked up the scarf. Who does it belong to?"
+scarf_picked = "You already picked up the scarf."
+
+#Hall
+hall_desc = "You are now in the main hall of Gerudo Town. To the East is a bazaar, to the West is the barracks, and to the North is the throne room."
+look_morning = "The bazaar is full of different goods and items. There are guards working inside. Maybe there is something useful inside?"
+look_afternoon = "The bazaar is full of different goods and items. The workers have all left to go on break, but the door is unlocked. Maybe there is something useful inside?"
+look_night = "The bazaar is full of different goods and items. They are closed at night."
+
+#Barracks
+barracks_desc = "You have entered the barracks. There are multiple guards resting in here. If you choose to go to bed, you can rest until morning, afternoon, or night."
+bed_desc = "You have entered the bed, when do you want to wake up?"
+morning_desc = "It is now morning."
+afternoon_desc = "It is now afternoon."
+night_desc = "It is now night."
+
+#Bazaar
+bazaar_desc = "You have entered the bazaar. You can check what is for sale in the catalog"
+bazaar_desc_night = "The bazaar is closed right now. They are open in the morning and afternoon."
+food_money = "You have purchased food for 100 coins."
+utensils_money = "You have purchased utensils for 100 coins."
+no_money = "You do not have enough money. Maybe if no one was around you could just take it..."
+stolen_desc = "You should get out of here before anyone comes back."
+food_stolen = "You stole the food. You should leave before anyone comes back..."
+utensils_stolen = "You stole the utensils. You should leave before anyone comes back..."
+item_got = "You already have this item."
+
+#Throne Room
+throne_desc = "You have entered a lavish space. In the room, there is a guard standing in front of the Thunder Helmet, which is inside a locked glass box. To the East there is an exit out of the town"
+no_food_guard = "Guard: As long as i’m here no ones gonna take the Thunder Helmet! But I wish I could step away to eat…"
+guard_food_recieve = "Guard: Thanks for the food!"
+user_food = "Guard: Did you bring that food for me? Thank you so much I was starving! I think during the night, I’ll trust you to guard the Thunder Helmet."
+get_thunder_helm = "You still don't have the Thunder Helmet, you can’t leave yet."
+#Night
+look_helm = "The helmet is inside a locked glass box. Maybe there's something you could use to pick the lock."
+get_helm_locked = "The box is locked. Maybe there's something you could use to pick the lock."
+get_helm = "The lock has been opened. You have picked up the Thunder Helmet."
+win_desc = "You have successfully taken the Thunder Helmet! You win."
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#start game
+print(start_desc)
+
+while not won:
+    command = input("> ")
+    command = command.strip()
+    
+    if command == "quit":
+        break
+    
+    #plaza code
+    if current_status['Location'] == "Plaza":
+        if command == "time" or command == "location":
+            print(current_status)
+        elif command == "inventory":
+            print(current_inventory)
+            
+        elif command == "go west":
+            if "Scarf" not in current_inventory['Other Items'] and man == False:
+                print(garden_desc_scarf)
+                current_status['Location'] = "Garden"
+            else:
+                print(garden_desc)
+                current_status['Location'] = "Garden"
+        elif command == "go east":
+            print(man_desc)
+        elif command == "go north":
+            if current_inventory['Outfit'] == "Traveler's Clothes":
+                print(entrance_desc)
+            elif current_inventory['Outfit'] == "Gerudo Armor":
+                print(hall_desc)
+                current_status['Location'] = "Hall"
+        elif command == "go south":
+            print(desert_desc)
+    #east
+        elif command == "talk to man":
+            if "Scarf" not in current_inventory['Other Items'] and man == False:
+                print(talk_man)
+            elif "Scarf" not in current_inventory['Other Items'] and man == True:
+                print(talk_man_scarf)
+                
+            else:
+                print(talk_man_recieve)
+                man = True
+                current_inventory['Money'] = 600
+                print("*600 Coins Received*")
+                del items[0]
+                current_inventory['Other Items'] = "None"
+    #north
+        elif command == "talk to guard":
+            if current_inventory['Outfit'] == "Traveler's Clothes":
+                print(guard_no_armor)
+            elif current_inventory['Outfit'] == "Gerudo Armor":
+                print(guard_with_armor)
+        else:
+            print("Sorry")
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+    #garden code
+    elif current_status['Location'] == "Garden":
+        if command == "time" or command == "location":
+            print(current_status)
+        elif command == "inventory":
+            print(current_inventory)
+            
+        elif command == "go east":
+            print(plaza_desc)
+            current_status['Location'] = "Plaza"
+        elif command == "talk to lady":
+            if current_inventory['Money'] == 0 and current_inventory['Outfit'] == "Traveler's Clothes":
+                print(talk_lady_no_money)
+            elif current_inventory['Money'] >= 500 and current_inventory['Outfit'] == "Traveler's Clothes":
+                print(talk_lady_money)
+                current_inventory['Money'] = 100 
+                print("*Gerudo Armor Equipped*")
+                current_inventory['Outfit'] = "Gerudo Armor"
+                items.append("Traveler's Clothes")
+                current_inventory['Other Items'] = items
+            else:
+                print(talk_lady)
+        elif command == "get scarf":
+            if "Scarf" not in current_inventory['Other Items'] and man == False:
+                print(scarf_not_picked)
+                items.append("Scarf")
+                current_inventory['Other Items'] = items
+            else:
+                print(scarf_picked)
+        else:
+            print("Sorry")
+ #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+ 
+    #hall code
+    elif current_status['Location'] == "Hall":
+        if command == "time" or command == "location":
+            print(current_status)
+        elif command == "inventory":
+            print(current_inventory)
+            
+        elif command == "go south":
+            print(plaza_desc)
+            current_status['Location'] = "Plaza"
+        elif command == "go west":
+            print(barracks_desc)
+            current_status['Location'] = "Barracks"
+        elif command == "go north":
+            print(throne_desc)
+            current_status['Location'] = "Throne Room"
+        elif command == "go east":
+            if current_status['Time'] == "Morning" or current_status['Time'] == "Afternoon":
+                print(bazaar_desc)
+                current_status['Location'] = "Bazaar"
+            else:
+                print(bazaar_desc_night)
+        elif command == "look at bazaar":
+            if current_status['Time'] == "Morning":
+                print(look_morning)
+            elif current_status['Time'] == "Afternoon":
+                print(look_afternoon)
+            else:
+                print(look_night)
+        else:
+            print("Sorry")
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    #barracks code
+    elif current_status['Location'] == "Barracks":
+        if command == "time" or command == "location":
+            print(current_status)
+        elif command == "inventory":
+            print(current_inventory)
+            
+        elif command == "go east":
+            print(hall_desc)
+            current_status['Location'] = "Hall"
+        elif command == "go to bed":
+            print(bed_desc)
+            go_to_bed = False
+            while go_to_bed == False:
+                command = input("> ")
+                command = command.strip()
+                if command == "morning":
+                    print(morning_desc)
+                    go_to_bed = True
+                    current_status['Time'] = "Morning"
+                elif command == "afternoon":
+                    print(afternoon_desc)
+                    go_to_bed = True
+                    current_status['Time'] = "Afternoon"
+                elif command == "night":
+                    print(night_desc)
+                    go_to_bed = True
+                    current_status['Time'] = "Night"
+                elif command != "Morning" or "Afternoon" or "Night":
+                    print("Please choose between morning, afternoon, and night.")
+        else:
+            print("Sorry")
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+    #bazaar code
+    elif current_status['Location'] == "Bazaar":
+        stolen = False
+        if command == "time" or command == "location":
+            print(current_status)
+        elif command == "inventory":
+            print(current_inventory)
+        elif command == "catalog":
+            print(bazaar_items)
+        
+        elif command == "go west":
+            print(hall_desc)
+            current_status['Location'] = "Hall"
+            
+        elif command == "get food" and current_status['Time'] == "Morning":
+            if current_inventory['Money'] >= 100 and "Food" in bazaar_items:
+                print(food_money)
+                current_inventory['Money'] = 0
+                items.append("Food")
+                print("*Food Acquired*")
+                del bazaar_items[0]
+                
+            elif "Food" not in bazaar_items:
+                print(item_got)
+            else:
+                print(no_money)
+        elif command == "get utensils" and current_status['Time'] == "Morning":
+            if current_inventory['Money'] >= 100 and "Utensils" in bazaar_items:
+                print(utensils_money)
+                current_inventory['Money'] = 0
+                items.append("Utensils")
+                print("*Utensils Acquired*")
+                del bazaar_items[1]
+                
+            elif "Utensils" not in bazaar_items:
+                print(item_got)
+            else:
+                print(no_money)
+        
+        elif command == "get food" and current_status['Time'] == "Afternoon":
+            if current_inventory['Money'] >= 100 and "Food" in bazaar_items:
+                print(food_money)
+                current_inventory['Money'] = 0
+                items.append("Food")
+                print("*Food Acquired*")
+                del bazaar_items[0]
+                
+            elif "Food" not in bazaar_items:
+                print(item_got)
+            
+            elif "Food" in bazaar_items and current_inventory['Money'] == 0 and stolen == False:
+                print(food_stolen)
+                stolen = True
+                items.append("Food")
+                print("*Food Acquired*")
+                del bazaar_items[0]
+                
+        elif command == "get utensils" and current_status['Time'] == "Afternoon":
+            if current_inventory['Money'] >= 100 and "Utensils" in bazaar_items:
+                print(utensils_money)
+                current_inventory['Money'] = 0
+                items.append("Utensils")
+                print("*Utensils Acquired*")
+                if "Food" in bazaar_items:
+                    del bazaar_items[1]
+                else:
+                    del bazaar_items[0]
+                
+            elif "Utensils" not in bazaar_items:
+                print(item_got)
+            
+            elif "Utensils" in bazaar_items and current_inventory['Money'] == 0 and stolen == False:
+                print(utensils_stolen)
+                stolen = True
+                items.append("Utensils")
+                print("*Utensils Acquired*")
+                if "Food" in bazaar_items:
+                    del bazaar_items[1]
+                else:
+                    del bazaar_items[0]
+        elif command == "get food" or "get utensils" and current_status['Time'] == "Afternoon" and current_inventory['Money'] == 0 and stolen == True:
+            print(stolen_desc)
+        else:
+            print("Sorry")
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    #throne room code
+    elif current_status['Location'] == "Throne Room":
+        if command == "time" or command == "location":
+            print(current_status)
+        elif command == "inventory":
+            print(current_inventory)
+            
+        elif command == "go south":
+            if "Thunder Helm" not in items:
+                print(hall_desc)
+                current_status['Location'] = "Hall"
+            else:
+                print("You should probably leave before someone notices the helmet is gone.")
+        elif command == "go east":
+            if "Thunder Helm" in items:
+                print(win_desc)
+                won = True
+            else:
+                print(get_thunder_helm)
+        elif command == "talk to guard":
+            if current_status['Time'] == "Morning" or current_status['Time'] == "Afternoon":
+                if "Food" not in current_inventory['Other Items'] and guard == False:
+                    print(no_food_guard)
+                elif "Food" not in current_inventory['Other Items'] and guard == True:
+                    print(guard_food_recieve)
+                elif "Food" in items and guard == False:
+                        print(user_food)
+                        guard = True
+                        a = items.index("Food")
+                        a = int(a)
+                        del items[a]
+            elif current_status['Time'] == "Night":
+                if "Food" not in items and guard == True:
+                    print("The guard left you in charge of guarding the helmet.")
+                elif "Food" not in items and guard == False:
+                    if "Food" not in current_inventory['Other Items'] and guard == False:
+                        print(no_food_guard)
+                elif "Food" in items and guard == False:
+                    print(user_food)
+                    guard = True
+                    a = items.index("Food")
+                    a = int(a)
+                    del items[a]
+                        
+            
+        elif command == "look at thunder helmet":
+            if current_status['Time'] == "Morning" or current_status['Time'] == "Afternoon":
+                print("There is a guard standing in front of the helmet.")
+            elif current_status['Time'] == "Night" and thunder_helm == False:
+                if guard == False:
+                    print("There is a guard standing in front of the helmet.")
+                else:
+                    print(look_helm)
+            elif current_status['Time'] == "Night" and thunder_helm == True:
+                print("The box is empty and unlocked now that you picked the lock and took the helmet.")
+        elif command == "get thunder helmet":
+            if current_status['Time'] == "Morning" or current_status['Time'] == "Afternoon":
+                print("There is a guard standing in front of the helmet.")
+            elif current_status['Time'] == "Night" and thunder_helm == False:
+                if "Utensils" not in items:
+                    print(get_helm_locked)
+                elif "Utensils" in items and guard == False:
+                     print("There is a guard standing in front of the helmet.")
+                elif "Utensils" in items and guard == True:
+                    print(get_helm)
+                    items.append("Thunder Helm")
+                    thunder_helm = True
+                    print("*Thunder Helmet Acquired*")
+                    print("Now that you have the helmet you can get out of here.")
+            elif current_status['Time'] == "Night" and thunder_helm == True:
+                print("You already have the helmet. Go out the exit quickly!")
+                    
+            
+                    
+            
+            
+             
+                
+        
+    
+            
+                
+                
+                
+                
+                
+            
+            
+                
+        
+            
+            
+            
+            
+          
+                
+                
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
